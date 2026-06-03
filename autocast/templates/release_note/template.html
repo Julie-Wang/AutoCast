@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            width: 1920px;
+            height: 1080px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            font-family: "Noto Sans SC", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px;
+        }
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #00d4ff;
+        }
+        .version {
+            font-size: 120px;
+            font-weight: bold;
+            margin-bottom: 60px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .highlights {
+            font-size: 36px;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 1400px;
+        }
+        .highlight-item {
+            margin: 20px 0;
+            padding: 20px 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border-left: 4px solid #00d4ff;
+        }
+        .footer {
+            position: absolute;
+            bottom: 60px;
+            font-size: 24px;
+            color: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">{{ project_name }}</div>
+    <div class="version">{{ version }}</div>
+    <div class="highlights">
+        {% for highlight in highlights %}
+        <div class="highlight-item">{{ highlight }}</div>
+        {% endfor %}
+    </div>
+    <div class="footer">{{ repo_url }}</div>
+</body>
+</html>

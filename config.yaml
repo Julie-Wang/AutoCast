@@ -1,0 +1,51 @@
+# AutoCast 项目配置
+
+project:
+  name: "AutoCast"
+  repo_url: "https://github.com/YOUR_USERNAME/AutoCast"
+  description: "AI-powered content pipeline for open source projects"
+
+# 流水线配置
+pipeline:
+  doc_to_video:
+    source: "README.md"           # 源文档路径
+    template: "release_note"      # 使用模板
+    max_duration: 60              # 视频最大时长（秒）
+    output_dir: "output/videos"
+
+  issue_to_visual:
+    template: "issue_summary"     # Issue 总结模板
+    output_dir: "output/visuals"
+
+# AI 模型配置
+models:
+  content_generator:
+    provider: "deepseek"          # deepseek / openai / xiaomi / local
+    model: "deepseek-chat"
+    api_key: "${DEEPSEEK_API_KEY}"
+    base_url: "https://api.deepseek.com/v1"
+
+  # 备用模型
+  fallback:
+    provider: "openai"
+    model: "gpt-4o-mini"
+    api_key: "${OPENAI_API_KEY}"
+
+# 渲染配置
+render:
+  ffmpeg_path: "ffmpeg"         # FFmpeg 路径
+  resolution: [1920, 1080]        # 输出分辨率
+  fps: 30
+
+# TTS 配置
+tts:
+  provider: "edge"              # edge / openai / local
+  voice: "zh-CN-XiaoxiaoNeural" # 中文女声
+  rate: "+0%"
+  pitch: "+0Hz"
+
+# 模板配置
+templates:
+  default_font: "NotoSansSC-Bold"
+  default_font_size: 36
+  theme: "dark"                 # dark / light / brand

@@ -1,0 +1,5 @@
+name: "release_note"
+description: "版本发布视频模板"
+duration: 60
+slides: 3
+transition: "fade"

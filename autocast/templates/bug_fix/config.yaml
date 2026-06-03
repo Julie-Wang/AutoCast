@@ -1,0 +1,21 @@
+# Bug Fix 视频模板配置
+name: "bug_fix"
+description: "Bug 修复说明视频"
+theme: "warning_fix"
+color_scheme:
+  primary: "#E53935"      # 警告红色
+  secondary: "#43A047"    # 修复成功绿色
+  background: "#1A1A2E"   # 深色背景
+  text: "#FFFFFF"
+  accent: "#FF9800"       # 强调橙色
+layout:
+  header_height: 180
+  content_padding: 80
+  card_radius: 16
+fonts:
+  title_size: 64
+  subtitle_size: 42
+  body_size: 32
+transitions:
+  type: "slide_left"
+  duration: 0.8
