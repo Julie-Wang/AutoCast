@@ -1,28 +1,79 @@
 # AutoCast
 
-> 让开源项目自动生成内容：README → 视频，Issue → 信息图，Release → 社交媒体素材。
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-AutoCast 是一个面向**开源维护者**的 AI 内容流水线工具。它将 GitHub 原生数据（README、CHANGELOG、Issues、PRs）自动转化为短视频和信息图，把维护者从内容生产的重复劳动中解放出来。
+> **中文**：面向开源维护者的 **AI Agent 内容流水线**。AutoCast 自动读取 GitHub 原生数据（README、CHANGELOG、Issues、PRs），由大模型生成脚本，再由 FFmpeg 渲染为短视频和信息图，让开源项目的每次发版都能自动产出传播素材。
+>
+> **English**: An **AI Agent content pipeline for open-source maintainers**. AutoCast reads native GitHub data (README, CHANGELOG, Issues, PRs), generates scripts via LLMs, and renders them into short videos and infographics with FFmpeg—so every release automatically produces marketing content.
 
-## 为什么需要 AutoCast？
+---
 
-开源维护者面临双重负担：
-- 写代码、审 PR、发版本
-- 做内容传播：写 Release Note、做演示视频、发社交媒体
+## 🎯 AI Agent Positioning / AI Agent 定位
 
-AutoCast 通过自动化流水线，**让任何开源项目在每次发版时自动生成宣传视频**。
+AutoCast 是一个**数据驱动的 Agent**：
 
-## 核心特性
+- **输入**：GitHub 仓库数据（文档、Issue、PR、Release、Contributors）
+- **大脑**：DeepSeek / OpenAI / MiMo / Local LLM 生成内容脚本
+- **手脚**：Python 流水线 + HTML/CSS 模板 + FFmpeg 本地渲染
+- **输出**：可直接发布到社交媒体的短视频与信息图
 
-- 🎬 **双管线架构**：Python 线（文档→视频）+ Node 线（数据→视觉）
-- 🔧 **GitHub Action 一键集成**：添加一个 workflow 文件即可接入
-- 🎨 **内置模板市场**：Release Note、Bug 修复说明、新功能演示等模板
-- 🧠 **多模型适配**：支持 OpenAI / DeepSeek / 本地模型作为内容生成大脑
-- 🖥️ **纯本地渲染**：FFmpeg 本地执行，不依赖云服务
+它把维护者从“发版后还要写推文、做视频”的重复劳动中解放出来。
 
-## 快速开始
+---
 
-### 1. 安装
+## ✨ Features / 核心特性
+
+| Feature / 功能 | Description / 说明 |
+|---|---|
+| 🎬 **Doc → Video** / 文档转视频 | README / CHANGELOG → 60 秒发布解说视频。 |
+| 🐛 **Issue → Visual** / Issue 转信息图 | Bug 修复说明自动生成可视化卡片。 |
+| 🤖 **LLM-Powered Scripting** / LLM 驱动 | 支持 DeepSeek、OpenAI、MiMo、本地模型作为内容生成大脑。 |
+| 🎨 **Template Market** / 模板市场 | Release Note、Bug Fix、Feature Demo、Contributor Thanks 等模板。 |
+| 🔧 **GitHub Action Ready** / 一键 CI | 添加一个 workflow 即可在发版时自动触发。 |
+| 🖥️ **Local Rendering** / 本地渲染 | 纯 FFmpeg 本地渲染，不依赖云端视频服务。 |
+
+---
+
+## 🏗️ Architecture / 架构
+
+```
+GitHub Data (README / CHANGELOG / Issue / PR)
+        │
+        ▼
+┌─────────────────────────────────────┐
+│  AutoCast AI Agent Pipeline         │
+│  ├── parsers: extract repo facts    │
+│  ├── generators: LLM script writer  │
+│  ├── templates: HTML/CSS scenes     │
+│  └── renderers: FFmpeg renderer     │
+└─────────────────────────────────────┘
+        │
+        ▼
+   output/release_video.mp4
+   output/issue_visual.png
+```
+
+```
+AutoCast/
+├── autocast/                    # AI Agent 核心引擎
+│   ├── pipelines/               # 流水线实现
+│   │   ├── doc_to_video.py      # README → 视频
+│   │   └── issue_to_visual.py   # Issue → 信息图
+│   ├── generators/              # LLM 内容生成适配器
+│   ├── templates/               # 视频模板（HTML/CSS）
+│   └── renderers/               # FFmpeg 渲染层
+├── .github/workflows/           # GitHub Action 模板
+├── config.yaml                  # 项目配置
+├── examples/                    # 示例项目
+└── README.md                    # 本文件
+```
+
+---
+
+## 🚀 Quick Start / 快速开始
+
+### 1. Install / 安装
 
 ```bash
 git clone https://github.com/Julie-Wang/AutoCast.git
@@ -30,9 +81,9 @@ cd AutoCast
 pip install -r requirements.txt
 ```
 
-### 2. 配置
+### 2. Configure / 配置
 
-编辑 `config.yaml`：
+Edit `config.yaml`:
 
 ```yaml
 project:
@@ -43,26 +94,29 @@ pipeline:
   doc_to_video:
     source: "README.md"
     template: "release_note"
-    output: "output/release_video.mp4"
+    output_dir: "output/videos"
 
 models:
-  content_generator: "deepseek"  # 或 openai / xiaomi
-  api_key: "${DEEPSEEK_API_KEY}"
+  content_generator:
+    provider: "deepseek"        # deepseek / openai / xiaomi / local
+    model: "deepseek-chat"
+    api_key: "${DEEPSEEK_API_KEY}"
+    base_url: "https://api.deepseek.com/v1"
 ```
 
-### 3. 运行
+### 3. Run / 运行
 
 ```bash
-# 生成 Release Note 视频
-python -m autocast pipeline doc_to_video --template release_note
+# Generate release note video / 生成发布说明视频
+python -m autocast pipeline doc_to_video README.md --template release_note
 
-# 生成 Issue 总结信息图
+# Generate issue summary infographic / 生成 Issue 总结信息图
 python -m autocast pipeline issue_to_visual --issue 123
 ```
 
-### 4. GitHub Action 集成
+### 4. GitHub Action Integration / GitHub Action 集成
 
-在你的项目中添加 `.github/workflows/autocast.yml`：
+Add `.github/workflows/autocast.yml` to your project:
 
 ```yaml
 name: AutoCast Release Video
@@ -80,43 +134,39 @@ jobs:
           output: "release_video.mp4"
 ```
 
-## 架构
+---
 
-```
-AutoCast/
-├── autocast/               # 核心引擎
-│   ├── pipelines/          # 流水线实现
-│   │   ├── doc_to_video.py # README → 视频
-│   │   └── issue_to_visual.py # Issue → 信息图
-│   ├── templates/          # 视频模板（HTML/CSS）
-│   ├── generators/         # AI 内容生成适配器
-│   └── renderers/          # FFmpeg 渲染层
-├── .github/
-│   └── workflows/          # GitHub Action 模板
-├── config.yaml             # 项目配置
-└── examples/               # 示例项目
-```
+## 🎨 Template Market / 模板市场
 
-## 模板市场
+| Template / 模板 | Scenario / 场景 | Input / 输入 | Output / 输出 |
+|---|---|---|---|
+| `release_note` | Version release / 版本发布 | CHANGELOG | 60s explainer video |
+| `bug_fix` | Bug fix demo / Bug 修复说明 | Issue + PR | 30s fix demo |
+| `feature_demo` | New feature showcase / 新功能演示 | README section | 45s feature video |
+| `contributor_thanks` | Contributor thanks / 贡献者致谢 | Contributors list | 15s thank-you video |
 
-| 模板 | 场景 | 输入 | 输出 |
-|------|------|------|------|
-| `release_note` | 版本发布 | CHANGELOG | 60秒解说视频 |
-| `bug_fix` | Bug 修复说明 | Issue + PR | 30秒修复演示 |
-| `feature_demo` | 新功能演示 | README 章节 | 45秒功能展示 |
-| `contributor_thanks` | 贡献者致谢 | Contributors 列表 | 15秒感谢视频 |
+---
 
-## 技术栈
+## 🛠️ Tech Stack / 技术栈
 
-- Python 3.10+
-- FFmpeg
-- Node.js 18+（Node 线）
-- HTML/CSS 动画模板
+- **Python 3.10+** — pipeline orchestration
+- **FFmpeg** — video rendering
+- **Node.js 18+** — optional visual pipeline
+- **HTML/CSS** — animated templates
+- **LLM APIs** — DeepSeek / OpenAI / MiMo / local models
 
-## 贡献
+---
 
-欢迎提交 Issue 和 PR！详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+## 🤝 Contributing / 贡献
 
-## 许可证
+欢迎提交 Issue 和 PR！详见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
-MIT License
+Issues and PRs are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+---
+
+## 📄 License / 许可证
+
+This project is licensed under the [MIT License](./LICENSE).
+
+本项目采用 [MIT 许可证](./LICENSE)。
